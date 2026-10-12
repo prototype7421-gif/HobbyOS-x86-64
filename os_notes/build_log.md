@@ -234,3 +234,18 @@ how??
 we shouldnt exceed it so thts why we add scroll feature 
 as soon as it writes 25 lines...the first line is then omitted and every line shifts one above.
 >also made an mechasnism of writing things in new line.
+
+# 12/10/26
+today i implemented some more functions
+>clear screen()- if we open the kernel again we should be able to see everything blank
+>put_char()- to make the print function small and also to add future features.
+kernel_entry()
+     |
+     v
+print("Hello")
+     |
+     |-- put_char('H')
+     |-- put_char('e')
+     |-- put_char('l')
+     |-- put_char('l')
+     |-- put_char('o')

@@ -1,39 +1,78 @@
- volatile short* ptr =(volatile short *)0xB8000;
-    int cursor = 0;
-void scroll_screen(void);
-  void print( const char* message){
-  for(int i =0; message[i]!= '\0';i++){
-    if(message[i]=='\n'){
-      cursor = ((cursor / 80) + 1) * 80;
-    
-    if(cursor>=2000){
-      scroll_screen();
+#define SCREEN_WIDTH  80
+#define SCREEN_HEIGHT 25
+#define SCREEN_SIZE   (SCREEN_WIDTH * SCREEN_HEIGHT)
+
+volatile unsigned short *ptr = (volatile unsigned short *)0xB8000;
+
+unsigned int cursor = 0;
+
+void scroll_screen(void)
+{
+    for (int i = 0; i < SCREEN_SIZE - SCREEN_WIDTH; i++){
+        ptr[i] = ptr[i + SCREEN_WIDTH];
     }
-    continue;
-  }
-   if(cursor>=2000){
-      scroll_screen();
+
+    unsigned short blank =
+        ((unsigned short)0x0F << 8) | ' ';
+
+    for (int j = SCREEN_SIZE - SCREEN_WIDTH;
+         j < SCREEN_SIZE; j++){
+        ptr[j] = blank;
     }
-    ptr[cursor]=((unsigned short)0x0F << 8)
-                 | (unsigned char)message[i];
-           cursor++;      
-}
-  }
-void scroll_screen(void){
-   int  screenSize = 80 * 25;
-   int screenWidth =80;
-  if(cursor >= screenSize){
-    for(int i =0;i< screenSize-screenWidth;i++){
-      ptr[i]=ptr[i+screenWidth];
-    }
-    for(int j =screenSize-screenWidth;j< screenSize;j++){
-      ptr[j] = ((unsigned short)0x0F << 8) | ' ';
-      }
-      cursor=screenSize-screenWidth;
-}
+
+    cursor = SCREEN_SIZE - SCREEN_WIDTH;
 }
 
-void kernel_entry(void)
+void clear_screen(void){
+    unsigned short blank =
+        ((unsigned short)0x0F << 8) | ' ';
+
+    for (int i = 0; i < SCREEN_SIZE; i++)
+    {
+        ptr[i] = blank;
+    }
+
+    cursor = 0;
+}
+
+void put_char(char ch){
+    if (ch == '\n')
+    {
+        cursor = ((cursor / SCREEN_WIDTH) + 1)
+                 * SCREEN_WIDTH;
+
+        if (cursor >= SCREEN_SIZE)
+        {
+            scroll_screen();
+        }
+
+        return;
+    }
+
+    if (cursor >= SCREEN_SIZE)
+    {
+        scroll_screen();
+    }
+
+    ptr[cursor] =
+        ((unsigned short)0x0F << 8) |
+        (unsigned char)ch;
+
+    cursor++;
+}
+void print(const char *message)  // 1sr function implemented
 {
-    print("hello Modric");
+    for (int i = 0; message[i] != '\0'; i++)
+    {
+        put_char(message[i]);
+    }
+}
+
+
+
+void kernel_entry(void){
+    clear_screen();
+    print("Hello!! Lukita\n");
+    print("Welcome to my OS\n");
+    print("My kernel is working!");
 }
