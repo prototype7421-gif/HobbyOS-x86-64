@@ -60,7 +60,7 @@ void put_char(char ch){
 
     cursor++;
 }
-void print(const char *message)  // 1sr function implemented
+void print(const char *message)  // 1st function implemented
 {
     for (int i = 0; message[i] != '\0'; i++)
     {

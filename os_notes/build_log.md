@@ -249,3 +249,39 @@ print("Hello")
      |-- put_char('l')
      |-- put_char('l')
      |-- put_char('o')
+
+# 2/11/26
+ok so now we tried all sorts of stuff on VGA text memory...
+but there is a distinction and that is
+> without the use of keyboard
+but now lets introduce keyboard
+for tht we will need keyboard drivers but we need too understand first
+>how keyboard recognizes there is a text typed
+see till now we were working with memory mapping but now we will use
+> I/O from PORTS
+X60- for reading data
+X64-for writing it
+ok so theres a question arise
+> how does the keyboard knows to type a letter?
+theres a term called 
+Status Register?
+well it tells the keyboard controller from port to read bytes.\
+BIT 0-there isnt any data to process,means nothing typed 
+BIT 1- some data just arrived
+
+User presses A
+         |
+Keyboard controller
+         |
+Scancode receive karta hai
+         |
+Read status from 0x64
+         |
+Bit 0 check karo
+         |
+Bit 0 = 1
+Data available
+       |
+Read from 0x60
+         |
+Scancode receive karo
